@@ -35,12 +35,28 @@
     }
   }
 
+  // Ad content builder (imageUrl preferred, svgCode fallback)
+  function buildAdContent(ad, imgStyle) {
+    if (ad.imageUrl) {
+      return `<img src="${ad.imageUrl}" alt="${ad.imageAlt || ad.title || 'Ad'}" style="${imgStyle}" />`;
+    }
+    if (ad.svgCode) {
+      return ad.svgCode;
+    }
+    return `<span style="color:#fff; font-family:sans-serif; font-size:14px;">${ad.title || 'Ad'}</span>`;
+  }
+
   // Normal Ad UI
   function renderNormalAd(container, ad) {
+    const content = buildAdContent(
+      ad,
+      "display:block; max-width:100%; height:auto; border-radius:8px;"
+    );
+
     container.innerHTML = `
       <div style="display:inline-block; position:relative; max-width:100%; border-radius:8px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.15);">
         <a href="${ad.targetUrl}" target="_blank" rel="noopener" style="display:block; text-decoration:none; line-height:0;">
-          ${ad.svgCode}
+          ${content}
         </a>
         <span style="position:absolute; bottom:5px; right:5px; background:rgba(0,0,0,0.7); color:#ffffff; font-size:9px; font-family:sans-serif; padding:2px 6px; border-radius:3px; pointer-events:none;">Ad by Rinix</span>
       </div>
@@ -49,6 +65,11 @@
 
   // Bottom Sticky Ad UI
   function renderBottomAd(container, ad) {
+    const content = buildAdContent(
+      ad,
+      "display:block; width:100%; max-width:728px; height:auto; margin:0 auto;"
+    );
+
     container.innerHTML = `
       <div id="rinix-bottom-banner" style="position:fixed; bottom:0; left:0; width:100%; z-index:999999; background:rgba(13, 17, 23, 0.95); backdrop-filter:blur(8px); border-top:1px solid #30363d; padding:8px 0; display:flex; justify-content:center; align-items:center;">
         
@@ -58,7 +79,7 @@
         <!-- Ad Container -->
         <div style="position:relative; width:100%; max-width:728px; padding:0 10px;">
           <a href="${ad.targetUrl}" target="_blank" rel="noopener" style="display:block; text-decoration:none; line-height:0;">
-            ${ad.svgCode}
+            ${content}
           </a>
           <span style="position:absolute; bottom:4px; right:14px; background:rgba(0,0,0,0.7); color:#ffffff; font-size:8px; font-family:sans-serif; padding:1px 4px; border-radius:2px; pointer-events:none;">Ad by Rinix</span>
         </div>
